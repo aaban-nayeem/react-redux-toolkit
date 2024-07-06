@@ -1,6 +1,8 @@
 import { createStore, applyMiddleware } from "redux";
 import logger from "redux-logger";
+import axios from "axios";
 
+const init = "init";
 // Define constants for increment
 const inc = "increment";
 // Define constant for decrement
@@ -11,21 +13,18 @@ const incByAmt = "incrementByAmount";
 //store
 const store = createStore(reducer, applyMiddleware(logger.default));
 
-// const reducer = (state = { amount: 1 }, action) => {
-//   return state;
-// };
-
 const history = [];
 
 function reducer(state = { amount: 1 }, action) {
-  if (action.type === inc) {
-    return { amount: state.amount + 1 };
-  }
-  if (action.type === dec) {
-    return { amount: state.amount - 1 };
-  }
-  if (action.type === incByAmt) {
-    return { amount: state.amount + action.payload };
+  switch (action.type) {
+    case inc:
+      return { amount: state.amount + 1 };
+    case dec:
+      return { amount: state.amount - 1 };
+    case incByAmt:
+      return { amount: state.amount + action.payload };
+    default:
+      return state;
   }
 
   return state;
@@ -36,6 +35,10 @@ store.subscribe(() => {
   history.push(store.getState());
   console.log(history);
 });
+
+function initUser() {
+  return { type: init };
+}
 
 // This function returns an object with a type property set to "increment"
 function increment() {
